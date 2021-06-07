@@ -1,3 +1,4 @@
+const { fstat } = require('fs');
 const generate_html = require('./src/generate_html')
 
 // inquirer questions
@@ -121,4 +122,49 @@ const addEmployee = () => {
             message: 'would you like to add more team members?'
         }
     ])
-}
+    .then(employeeData => {
+        let { name, id, email, role, github, school, confirmAddEmployee } = employeeData;
+        let employee;
+
+        if (role === 'engineer') {
+            employee = new engineer (name, id, email, github);
+            console.log(employee);
+        } else if (role === 'intern') {
+            employee = new intern (name, id, email);
+            console.log(employee);
+        }
+
+        teamArray.push(employee);
+
+        if (confirmAddEmployee) {
+            return addEmployee(teamArray);
+        } else {
+            return teamArray;
+        }
+    })
+};
+
+// function to generate HTML page
+
+const writeFile = data => {
+    fs.writeFile('./dist/index.html', data, err => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            console.log('your team has been successfully created!')
+        }
+    })
+};
+
+addManager()
+.then(addEmployee)
+.then(teamArray => {
+    return generate_html(teamArray);
+})
+.then(pageHTML => {
+    return writeFile(pageHTML);
+})
+.catch(err => {
+    console.log(err);
+});
