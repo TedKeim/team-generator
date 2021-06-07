@@ -51,5 +51,74 @@ const addManager = () => {
             }
         }
     ])
-    
+    .then(managerInput => {
+        const { name, id, email, officeNumber } = managerInput;
+        const manager = new Manager (name, id, email, officeNumber);
+
+        teamArray.push(manager);
+        console.log(manager);
+    })
+};
+
+const addEmployee = () => {
+    console.log('adding employees to team');
+
+    return inquirer.prompt ([
+        {
+            type: 'list',
+            name: 'role',
+            message: 'what is this employees job',
+            choices: ['engineer', 'intern']
+        },
+        {
+            type: 'input',
+            name: 'name',
+            message: 'what is this employees name',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log ('enter an employees name');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'id',
+            meesage: 'what is this employees ID',
+            validate: nameInput => {
+                if (isNaN(nameInput)) {
+                    console.log('enter the employees id')
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'enter this employees email'
+            // add function to validate email
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'enter this employees github username',
+            when: (input) => input.role === "engineer",
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log ('enter the employees github username')
+                }
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'confirmAddEmployee',
+            message: 'would you like to add more team members?'
+        }
+    ])
 }
