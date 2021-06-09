@@ -70,7 +70,7 @@ const addManager = () => {
 };
 
 const addEmployee = () => {
-    console.log('adding employees to team');
+    console.log('Add another employee to your team!');
 
     return inquirer.prompt ([
         {
