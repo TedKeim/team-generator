@@ -1,5 +1,13 @@
-const { fstat } = require('fs');
 const generate_html = require('./src/generate_html')
+const Manager = require('./lib/manager')
+const engineer = require('./lib/engineer')
+const intern = require('./lib/intern')
+
+const inquirer = require('inquirer')
+const fs = require('fs')
+
+const teamArray = [];
+
 
 // inquirer questions
 // start team with manager, then enginner + intern
@@ -52,7 +60,7 @@ const addManager = () => {
             }
         }
     ])
-    .then(managerInput => {
+    .then (managerInput => {
         const { name, id, email, officeNumber } = managerInput;
         const manager = new Manager (name, id, email, officeNumber);
 
@@ -68,7 +76,7 @@ const addEmployee = () => {
         {
             type: 'list',
             name: 'role',
-            message: 'what is this employees job',
+            message: 'what is this employees job?',
             choices: ['engineer', 'intern']
         },
         {
@@ -117,18 +125,32 @@ const addEmployee = () => {
             }
         },
         {
+            type:'input',
+            name: 'school',
+            message: 'enter what school this employee attended',
+            when: (input) => input.role === 'intern',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log ('enter the employees school')
+                }
+            }
+        },
+        {
             type: 'confirm',
             name: 'confirmAddEmployee',
             message: 'would you like to add more team members?'
         }
     ])
     .then(employeeData => {
-        let { name, id, email, role, github, school, confirmAddEmployee } = employeeData;
+        let { name, id, email, role, github, confirmAddEmployee } = employeeData;
         let employee;
 
         if (role === 'engineer') {
             employee = new engineer (name, id, email, github);
             console.log(employee);
+
         } else if (role === 'intern') {
             employee = new intern (name, id, email);
             console.log(employee);
